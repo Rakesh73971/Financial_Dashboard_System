@@ -5,7 +5,7 @@ def test_register_user(client):
         "password": "password123",
         "role": "analyst"
     })
-    assert response.status_code == 200
+    assert response.status_code == 201
     data = response.json()
     assert data["email"] == "new@test.com"
     assert data["username"] == "newuser"
@@ -22,5 +22,5 @@ def test_login_user(client):
         "username": "login@test.com",
         "password": "password123"
     })
-    assert response.status_code == 200
+    assert response.status_code == 202
     assert "access_token" in response.json()
