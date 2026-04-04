@@ -11,12 +11,12 @@ from app.core.security import create_access_token
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
-@router.post("/register",response_model=UserResponse)
+@router.post("/register",status_code=status.HTTP_201_CREATED,response_model=UserResponse)
 def register(user: UserCreate, db: Session = Depends(get_db)):
     return create_user(db, user)
 
 
-@router.post("/login")
+@router.post("/login",status_code=status.HTTP_202_ACCEPTED)
 def login(
     user_credentials: OAuth2PasswordRequestForm = Depends(), 
     db: Session = Depends(get_db)

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query,status
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.schemas.transaction import *
@@ -8,7 +8,7 @@ from app.core.permissions import require_role
 
 router = APIRouter(prefix="/transactions", tags=["Transactions"])
 
-@router.post("/", response_model=TransactionResponse)
+@router.post("/", response_model=TransactionResponse,status_code=status.HTTP_201_CREATED)
 def create(
     data: TransactionCreate,
     db: Session = Depends(get_db),
@@ -17,7 +17,7 @@ def create(
     return create_transaction(db, current_user.id, data)
 
 
-@router.get("/")
+@router.get("/",status_code=status.HTTP_200_OK)
 def get_all_transactions(
     type: str = Query(None),
     category: str = Query(None),
@@ -38,7 +38,7 @@ def get_all_transactions(
     return get_transactions(db, current_user.id, filters, skip, limit)
 
 
-@router.put("/{transaction_id}", response_model=TransactionResponse)
+@router.put("/{transaction_id}", response_model=TransactionResponse,status_code=status.HTTP_202_ACCEPTED)
 def update(
     transaction_id: int,
     data: TransactionUpdate,
@@ -53,7 +53,7 @@ def update(
     return transaction
 
 
-@router.delete("/{transaction_id}")
+@router.delete("/{transaction_id}",status_code=status.HTTP_204_NO_CONTENT)
 def delete(
     transaction_id: int,
     db: Session = Depends(get_db),
