@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, Query,status
+from fastapi import APIRouter, Depends, HTTPException, Query,status,Request
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.schemas.transaction import *
 from app.services.record_service import *
 from app.core.permissions import require_role
+from app.core.rate_limiter import limiter
 
 
 router = APIRouter(prefix="/transactions", tags=["Transactions"])
@@ -18,7 +19,9 @@ def create(
 
 
 @router.get("/",status_code=status.HTTP_200_OK)
+@limiter.limit("100/minute")
 def get_all_transactions(
+    request: Request,
     type: str = Query(None),
     category: str = Query(None),
     start_date: str = Query(None),
@@ -26,7 +29,7 @@ def get_all_transactions(
     skip: int = Query(0, ge=0),
     limit: int = Query(10, le=100),
     db: Session = Depends(get_db),
-    current_user=Depends(require_role(["analyst", "admin"]))
+    current_user=Depends(require_role(["viewer","analyst", "admin"]))
 ):
     filters = {
         "type": type,
@@ -64,4 +67,4 @@ def delete(
     if not transaction:
         raise HTTPException(status_code=404, detail="Transaction not found")
 
-    return {"message": "Transaction deleted"}
+    return None
