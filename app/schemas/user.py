@@ -13,9 +13,4 @@ class UserResponse(BaseModel):
     role: str
     is_active: bool
 
-    # Use the V2 ConfigDict approach here:
     model_config = ConfigDict(from_attributes=True)
-
-class UserLogin(BaseModel):
-    email: str
-    password: str
