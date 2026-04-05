@@ -11,7 +11,7 @@ router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 @router.get("/summary", status_code=status.HTTP_200_OK)
 @limiter.limit("60/minute")
 def summary(
-    requrest: Request,
+    request: Request,
     db: Session = Depends(get_db),
     current_user=Depends(require_role(["viewer", "analyst", "admin"])) 
 ):
