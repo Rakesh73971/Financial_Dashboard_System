@@ -17,7 +17,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     return create_user(db, user)
 
 
-@router.post("/login",status_code=status.HTTP_202_ACCEPTED)
+@router.post("/login",status_code=status.HTTP_200_OK)
 @limiter.limit("5/minute")
 def login(
     request: Request,

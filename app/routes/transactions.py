@@ -41,7 +41,7 @@ def get_all_transactions(
     return get_transactions(db, current_user.id, filters, skip, limit)
 
 
-@router.put("/{transaction_id}", response_model=TransactionResponse,status_code=status.HTTP_202_ACCEPTED)
+@router.put("/{transaction_id}", response_model=TransactionResponse,status_code=status.HTTP_200_OK)
 def update(
     transaction_id: int,
     data: TransactionUpdate,
