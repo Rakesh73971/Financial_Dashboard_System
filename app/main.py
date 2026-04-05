@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.db.session import engine, Base
-from app.routes import auth,transactions,dashboard,users
+from app.routes import auth,transaction,dashboard,user
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
@@ -16,6 +16,6 @@ app.add_exception_handler(RateLimitExceeded,_rate_limit_exceeded_handler)
 Base.metadata.create_all(bind=engine)
 
 app.include_router(auth.router)
-app.include_router(users.router)
-app.include_router(transactions.router)
+app.include_router(user.router)
+app.include_router(transaction.router)
 app.include_router(dashboard.router)
