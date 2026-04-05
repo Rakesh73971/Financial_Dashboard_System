@@ -1,117 +1,103 @@
 # 💰 Financial Dashboard Backend (FastAPI)
 
-A scalable and production-ready backend system for managing financial transactions, user roles, and dashboard analytics. Built using FastAPI, PostgreSQL, and JWT-based authentication.
+A scalable backend system for managing financial transactions, user roles, and analytics. Built with FastAPI, PostgreSQL, and JWT authentication following clean architecture principles.
 
 ---
 
-## 🚀 Features
+## 🚀 Tech Stack
 
-### 🔐 Authentication & Authorization
+* **Backend Framework**: FastAPI
+* **Language**: Python
+* **Database**: PostgreSQL
+* **ORM**: SQLAlchemy
+* **Authentication**: JWT (Token-based)
+* **Validation**: Pydantic
+* **Testing**: Pytest
+* **Rate Limiting**: SlowAPI
 
-* User registration and login
-* JWT-based authentication
+---
+
+## 🔐 Authentication & Authorization
+
+* JWT-based login system
+* Secure password hashing
 * Role-Based Access Control (RBAC)
 
-  * **Viewer** → Can view dashboard
-  * **Analyst** → Can view records & insights
-  * **Admin** → Full access (manage users & records)
+### Roles:
+
+* **Viewer** → View dashboard only
+* **Analyst** → Access transactions & insights
+* **Admin** → Full system control
 
 ---
 
-### 👤 User Management
+## 👤 User Management APIs
 
-* Create and manage users
-* Assign roles (Viewer, Analyst, Admin)
-* Activate / Deactivate users
-* Restrict actions based on roles
-
----
-
-### 💳 Financial Records Management
-
-* Create transactions (income/expense)
-* View all transactions
-* Update transactions
-* Soft delete transactions
-* Filter by:
-
-  * Date range
-  * Category
-  * Type (income/expense)
-* Pagination support
+| Method | Endpoint      | Description          | Access |
+| ------ | ------------- | -------------------- | ------ |
+| GET    | `/users/`     | Get all users        | Admin  |
+| GET    | `/users/me`   | Current user profile | All    |
+| PATCH  | `/users/{id}` | Update role/status   | Admin  |
 
 ---
 
-### 📊 Dashboard APIs
+## 🔐 Auth APIs
 
-* Total income
-* Total expenses
-* Net balance
-* Category-wise summary
-* Monthly trends
-* Recent transactions
+| Method | Endpoint         | Description       |
+| ------ | ---------------- | ----------------- |
+| POST   | `/auth/register` | Register user     |
+| POST   | `/auth/login`    | Login & get token |
 
 ---
 
-### ⚙️ Additional Features
+## 💳 Transaction APIs
 
-* Rate limiting (SlowAPI)
-* Input validation using Pydantic
-* Clean architecture (routes, services, models)
-* Unit & Integration testing using Pytest
+| Method | Endpoint             | Description                            | Access |
+| ------ | -------------------- | -------------------------------------- | ------ |
+| POST   | `/transactions/`     | Create transaction                     | Admin  |
+| GET    | `/transactions/`     | Get transactions (filter + pagination) | All    |
+| PUT    | `/transactions/{id}` | Update transaction                     | Admin  |
+| DELETE | `/transactions/{id}` | Delete transaction                     | Admin  |
 
----
+### Filters Supported:
 
-## 🏗️ Project Structure
+* Type (income/expense)
+* Category
+* Date range
 
-```
-finance-dashboard-backend/
-│
-├── app/
-│   ├── main.py
-│   ├── core/
-│   │   ├── config.py
-│   │   ├── security.py
-│   │   ├── permissions.py
-│   │   ├── limiter.py
-│   │
-│   ├── db/
-│   │   ├── session.py
-│   │   
-│   │
-│   ├── models/
-│   ├── schemas/
-│   ├── services/
-│   ├── routes/
-│   
-│
-├── tests/
-├── .env
-├── requirements.txt
-└── README.md
-```
+### Pagination:
+
+* `skip`
+* `limit`
 
 ---
 
-## ⚙️ Installation
+## 📊 Dashboard APIs
+
+| Method | Endpoint              | Description                    |
+| ------ | --------------------- | ------------------------------ |
+| GET    | `/dashboard/summary`  | Total income, expense, balance |
+| GET    | `/dashboard/category` | Category-wise totals           |
+| GET    | `/dashboard/monthly`  | Monthly trends                 |
+| GET    | `/dashboard/recent`   | Recent transactions            |
+
+---
+
+## ⚙️ Setup Instructions
 
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/your-username/finance-dashboard-backend.git
-cd finance-dashboard-backend
+git clone <repo-url>
+cd project-folder
 ```
-
----
 
 ### 2. Create Virtual Environment
 
 ```bash
 python -m venv venv
-venv\Scripts\activate   # Windows
+venv\Scripts\activate
 ```
-
----
 
 ### 3. Install Dependencies
 
@@ -119,11 +105,7 @@ venv\Scripts\activate   # Windows
 pip install -r requirements.txt
 ```
 
----
-
-### 4. Setup Environment Variables
-
-Create `.env` file:
+### 4. Configure Environment (.env)
 
 ```
 DATABASE_HOSTNAME=localhost
@@ -137,69 +119,11 @@ ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=60
 ```
 
----
-
-### 5. Run Application
+### 5. Run Server
 
 ```bash
 uvicorn app.main:app --reload
 ```
-
----
-
-## 🔐 Authentication
-
-### Register
-
-```
-POST /auth/register
-```
-
-### Login
-
-```
-POST /auth/login
-```
-
-Returns:
-
-```
-access_token
-```
-
-Use token:
-
-```
-Authorization: Bearer <token>
-```
-
----
-
-## 📌 API Endpoints
-
-### 🔹 Users
-
-* `GET /users` → List users (Admin)
-* `PUT /users/{id}` → Update role/status
-* `DELETE /users/{id}` → Delete user
-
----
-
-### 🔹 Transactions
-
-* `POST /records` → Create
-* `GET /records` → List (with filters & pagination)
-* `PUT /records/{id}` → Update
-* `DELETE /records/{id}` → Soft delete
-
----
-
-### 🔹 Dashboard
-
-* `GET /dashboard/summary`
-* `GET /dashboard/category`
-* `GET /dashboard/monthly`
-* `GET /dashboard/recent`
 
 ---
 
@@ -211,48 +135,52 @@ pytest
 
 ---
 
-## 🛡️ Security Features
+## 🛡️ Security & Reliability
 
-* Password hashing (bcrypt)
 * JWT authentication
-* Role-based access control
-* Rate limiting (prevents abuse)
+* Role-based authorization
+* Rate limiting on APIs
+* Input validation
+* Error handling
+* Soft delete for data safety
 
 ---
 
 ## 🧠 Design Decisions
 
-* **Service Layer** used for business logic separation
-* **Soft delete** implemented for safer data handling
-* **Pagination & Filtering** for scalability
-* **Modular structure** for maintainability
+* Service layer for business logic separation
+* Modular structure for scalability
+* Pagination for large datasets
+* Filters for flexible querying
 
 ---
 
 ## ⚠️ Assumptions
 
-* Each user owns their own transactions
-* Role-based access is strictly enforced
-* PostgreSQL is used in production
+* Each user accesses only their own data
+* Admin controls user roles and permissions
+* Transactions are user-specific
+
+---
+
+## 🔄 Trade-offs
+
+* Used synchronous SQLAlchemy instead of async (simpler implementation)
+* PostgreSQL used instead of NoSQL for structured financial data
+* Rate limiting per IP instead of per user (simpler setup)
 
 ---
 
 ## 🚀 Future Improvements
 
-* Caching (Redis)
-* Docker support
-* CI/CD pipeline
+* Redis caching
+* Docker deployment
+* Async DB support
 * API versioning
-* GraphQL support
+* CI/CD pipeline
 
 ---
 
 ## 👨‍💻 Author
 
 **Rakesh N**
-
----
-
-## ⭐ Contribution
-
-Feel free to fork, improve, and raise pull requests!
